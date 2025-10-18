@@ -1,0 +1,21 @@
+services:
+  # Nosso serviço de backend
+  backend:
+    build: .  # Constrói a partir do Dockerfile no diretório atual
+    container_name: agente_backend
+    ports:
+      - "8000:8000" # Mapeia a porta 8000 do seu PC para a 8000 do container
+    volumes:
+      # 1. Mapeamento do código:
+      #    Qualquer mudança no código local ('.') é refletida em '/code' no container.
+      - .:/code
+      # 2. Mapeamento do banco de dados:
+      #    Cria um volume chamado 'db_data' e o monta na pasta '/data' do container.
+      #    É aqui que nosso 'agente.db' vai morar.
+      - db_data:/data
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    # O comando '--reload' monitora mudanças no código (graças ao volume 1)
+
+# Definição do volume nomeado que vai guardar nosso banco de dados
+volumes:
+  db_data:
